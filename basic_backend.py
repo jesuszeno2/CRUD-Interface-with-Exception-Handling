@@ -1,5 +1,5 @@
 """
-Jesus Zeno SIE 508 Assignment 5.
+Jesus Zeno
 Basic_backend with exception handling. We have modified the original basic_backend CRUD file to allow for
 exception handling around critical code blocks.
 basic_backend.py: simple CRUD backend to store inventory items
@@ -43,8 +43,21 @@ def write_inv(items):
 
 # create item, add it to file
 def create_item(name, price, quantity):
+    # Check that name entered is a string
+    if not isinstance(name, str):
+        raise mvc_exc.NotString('{} is not a string!'.format(name))
+    # Check if price entered is a float
+    if not isinstance(price, float):
+        raise mvc_exc.NotNumber('{} is not a float!'.format(price))
+    # Check if quantitiy entered is an int
+    if not isinstance(quantity, int):
+        raise mvc_exc.NotNumber('{} is not an integer!'.format(quantity))
+        
     # reference list created from reading file
-    items = read_inv()
+    try:
+        items = read_inv()
+    except Exception as e:
+        raise Exception(e)
     # search first if that item already exists
     results = list(filter(lambda x: x['name'] == name, items))
     # if we find an existing item with the name, we raise an exception
@@ -54,18 +67,32 @@ def create_item(name, price, quantity):
     else:
         items.append({'name': name, 'price': price, 'quantity': quantity})
         # appended dictionary is written to file
-        write_inv(items)
+        try:
+            write_inv(items)
+        except Exception as e:
+            raise Exception(e)
 
 
 # bulk create times
 def create_items(app_items):
     items = app_items
-    write_inv(items)
+    try:
+        write_inv(items)
+    except Exception as e:
+        raise Exception(e)
 
 
 # read a particular item
 def read_item(name):
-    items = read_inv()
+    # Check if input value is a string
+    if not isinstance(name, str):
+        raise mvc_exc.NotString('{} is not a string!'.format(name))
+    # Try to read inventory
+    try:
+        items = read_inv()
+    except Exception as e:
+        raise Exception(e)
+    
     myitems = list(filter(lambda x: x['name'] == name, items))
     if myitems:
         return myitems[0]
@@ -76,20 +103,41 @@ def read_item(name):
 
 # read all items
 def read_items():
-    items = read_inv()
+    try:
+        items = read_inv()
+    except Exception as e:
+        raise Exception(e)
     return [item for item in items]
 
 
 # update item in file
 def update_item(name, price, quantity):
-    items = read_inv()
+    # Exception handling for input variable types
+    if not isinstance(name, str):
+        raise mvc_exc.NotString('{} is not a string!'.format(name))
+
+    if not isinstance(price, float):
+        raise mvc_exc.NotNumber('{} is not a float!'.format(price))
+
+    if not isinstance(quantity, int):
+        raise mvc_exc.NotNumber('{} is not an integer!'.format(quantity))
+    
+    # Read inventory
+    try:
+        items = read_inv()
+    except Exception as e:
+        raise Exception(e)
+  
     # Python 3.x removed tuple parameters unpacking (PEP 3113), so we have to do it manually (i_x is a tuple, idxs_items is a list of tuples)
     idxs_items = list(
         filter(lambda i_x: i_x[1]['name'] == name, enumerate(items)))
     if idxs_items:
         i, item_to_update = idxs_items[0][0], idxs_items[0][1]
         items[i] = {'name': name, 'price': price, 'quantity': quantity}
-        write_inv(items)
+        try:
+            write_inv(items)
+        except Exception as e:
+            raise Exception(e)
     else:
         raise mvc_exc.ItemNotStored(
             'Can\'t update "{}" because it\'s not stored'.format(name))
@@ -97,6 +145,10 @@ def update_item(name, price, quantity):
 
 # delete item from file
 def delete_item(name):
+    # Check input value
+    if not isinstance(name, str):
+        raise mvc_exc.NotString('{} is not a string!'.format(name))
+        
     items = read_inv()
     # Python 3.x removed tuple parameters unpacking (PEP 3113), so we have to do it manually (i_x is a tuple, idxs_items is a list of tuples)
     idxs_items = list(
@@ -106,7 +158,10 @@ def delete_item(name):
         i, item_to_delete = idxs_items[0][0], idxs_items[0][1]
         print("idxs_items[0][0], idxs_items[0][1]: ", idxs_items[0][0], " item in list, value:", idxs_items[0][1])
         del items[i]
-        write_inv(items)
+        try:
+            write_inv(items)
+        except Exception as e:
+            raise Exception(e)
     else:
         raise mvc_exc.ItemNotStored(
             'Can\'t delete "{}" because it\'s not stored'.format(name))
