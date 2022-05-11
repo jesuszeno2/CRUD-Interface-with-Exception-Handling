@@ -1,5 +1,5 @@
 """
-Jesus Zeno SIE 508 Assignment 5. This ModelBasic class sets up the object for the CRUD system.
+Jesus Zeno. This ModelBasic class sets up the object for the CRUD system.
 """
 
 import basic_backend
