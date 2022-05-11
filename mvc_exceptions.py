@@ -1,5 +1,5 @@
 """
-Jesus Zeno SIE508 Assignment 5.
+Jesus Zeno
 We will have all the custom exceptions for our basic_backend and Model files.
 Please note that ItemNotStored doesn't have a custom exception written for the class. This was to show
 how custom error messages can be made in the functions of basic_backend. In contrast, I made custom
@@ -35,8 +35,16 @@ class ModelItemAlreadyStored(Error):
 class ItemNotStored(Error):
     pass
 
+# Meant to be raised by ModelBasic class
 class ModelItemNotStored(Error):
     def __init__(self, name):
         super().__init__()
         self._name = name
         print("'{}' item is not stored. Model class error".format(self._name))
+
+# Excpetion handling for input value types
+class NotNumber(TypeError):
+    pass
+
+class NotString(TypeError):
+    pass
